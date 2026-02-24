@@ -21,12 +21,12 @@ const galleries = [
   <!-- Grid -->
   <div class="flex flex-wrap gap-8 w-[1312px]">
     {galleries.map((g) => (
-      <div class="bg-white rounded-[32px] w-[416px] h-[320px] flex flex-col overflow-hidden shadow-[0px_8px_0px_0px_rgba(0,0,0,0.25)] shrink-0 pb-8 gap-6">
+      <div class="bg-white rounded-[32px] w-[416px] h-[320px] flex flex-col overflow-hidden shadow-[0px_8px_0px_0px_rgba(0,0,0,0.25)] shrink-0 pb-6 gap-6">
         <div class="flex-1 min-h-0 rounded-[32px] overflow-hidden relative">
           <img
             src="/images/gallery.png"
             alt={g.title}
-            class="absolute inset-0 w-full h-full object-cover rounded-[32px]"
+            class="absolute inset-0 w-full h-full object-cover rounded-[32px] grayscale hover:grayscale-50 transition-all duration-300"
           />
         </div>
         <div class="flex items-center justify-between px-6 text-2xl text-black shrink-0">
@@ -37,7 +37,7 @@ const galleries = [
     ))}
   </div>
 
-  <button class="inline-flex items-center justify-center h-16 px-8 w-64 rounded-2xl font-inter font-semibold text-base tracking-[1.6px] uppercase text-white bg-brand-red border-none cursor-pointer">
+  <button class="inline-flex items-center justify-center h-16 px-2 w-64 rounded-2xl font-inter font-semibold text-base tracking-[1.6px] uppercase text-white bg-brand-red border-none cursor-pointer">
     Načíst Další galerie
   </button>
 
