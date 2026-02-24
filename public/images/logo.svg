@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="logo">
+<circle id="Ellipse 3" cx="48" cy="48" r="48" fill="var(--fill-0, #001B65)"/>
+<path id="Ellipse 4 (Stroke)" fill-rule="evenodd" clip-rule="evenodd" d="M48 88C70.0914 88 88 70.0914 88 48C88 25.9086 70.0914 8 48 8C25.9086 8 8 25.9086 8 48C8 70.0914 25.9086 88 48 88ZM48 92.8C72.7424 92.8 92.8 72.7424 92.8 48C92.8 23.2576 72.7424 3.2 48 3.2C23.2576 3.2 3.2 23.2576 3.2 48C3.2 72.7424 23.2576 92.8 48 92.8Z" fill="var(--fill-0, #FCA031)"/>
+<path id="Union" d="M22.4 23.2H30.4L48.0354 45.7723L65.6 23.2906V23.2H73.6V69.6H65.6V36.2847L48.0354 58.7664L30.4 36.1941V69.6H22.4V23.2Z" fill="var(--fill-0, #FCA031)"/>
+<g id="Subtract">
+<path d="M53.6 34.7516V16H61.6V24.5121L53.6 34.7516Z" fill="var(--fill-0, #FCA031)"/>
+<path d="M42.4 34.6611L34.4 24.4215V16H42.4V34.6611Z" fill="var(--fill-0, #FCA031)"/>
+<path d="M34.4 45.2122V70.4C34.4 77.9111 40.4889 84 48 84C55.5111 84 61.6 77.9111 61.6 70.4V45.3027L53.6 55.5423V70.4C53.6 73.4928 51.0928 76 48 76C44.9072 76 42.4 73.4928 42.4 70.4V55.4517L34.4 45.2122Z" fill="var(--fill-0, #FCA031)"/>
+</g>
+<path id="Vector 4" d="M48.3215 10.6431L52.4785 13.0431L46.6392 20.7569L44.5608 19.5569L48.3215 10.6431Z" fill="var(--fill-0, #FCA031)"/>
+</g>
+</svg>

@@ -1,0 +1,33 @@
+---
+const socials = [
+  { icon: "/images/icon-facebook.svg", label: "Facebook" },
+  { icon: "/images/icon-twitter.svg",  label: "Twitter"  },
+  { icon: "/images/icon-youtube.svg",  label: "YouTube"  },
+];
+---
+
+<footer class="bg-brand-footer rounded-t-[128px] overflow-hidden relative px-80 py-32 flex flex-col items-center justify-center">
+
+  <!-- Background -->
+  <img
+    src="/images/footer-bg.png"
+    alt=""
+    class="absolute inset-0 w-full h-full object-cover pointer-events-none"
+  />
+  <div class="absolute inset-0 bg-black/50"></div>
+
+  <!-- Content -->
+  <div class="relative z-10 flex flex-col gap-16 items-center w-full">
+    <p class="font-hepta font-medium text-[32px] text-white text-center m-0 leading-normal">
+      Sledujte náš virtuální potlach
+    </p>
+    <div class="flex gap-16 items-center justify-center">
+      {socials.map((s) => (
+        <a href="#" class="flex items-center justify-center w-16 h-16" aria-label={s.label}>
+          <img src={s.icon} alt={s.label} class="w-full h-full object-contain" />
+        </a>
+      ))}
+    </div>
+  </div>
+
+</footer>

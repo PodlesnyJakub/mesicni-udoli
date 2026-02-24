@@ -1,0 +1,46 @@
+---
+// Assets
+---
+
+<section class="relative h-[800px] overflow-hidden rounded-b-[128px]">
+  <!-- Background image + overlay -->
+  <img
+    src="/images/hero-bg.png"
+    alt=""
+    class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+  />
+  <div class="absolute inset-0 bg-black/50"></div>
+
+  <!-- Navigation -->
+  <nav class="absolute top-8 left-1/2 -translate-x-1/2 w-[1312px] flex items-center justify-between z-10">
+    <div class="flex gap-16 items-center w-[512px]">
+      <a href="#akce"    class="font-hepta font-bold text-xl text-white uppercase tracking-[1px] no-underline hover:text-brand-orange whitespace-nowrap">Akce na osadě</a>
+      <a href="#galerie" class="font-hepta font-bold text-xl text-white uppercase tracking-[1px] no-underline hover:text-brand-orange whitespace-nowrap">Fotogalerie</a>
+    </div>
+    <img src="/images/logo.svg" alt="Měsíční Údolí" class="w-24 h-24 shrink-0" />
+    <div class="flex gap-[54px] items-center justify-end w-[512px]">
+      <a href="#historie" class="font-hepta font-bold text-xl text-white uppercase tracking-[1px] no-underline hover:text-brand-orange whitespace-nowrap">Historie</a>
+      <a href="#kontakty" class="font-hepta font-bold text-xl text-white uppercase tracking-[1px] no-underline hover:text-brand-orange whitespace-nowrap">Kontakty</a>
+    </div>
+  </nav>
+
+  <!-- Title -->
+  <div class="absolute top-1/2 left-16 right-16 -translate-y-[calc(50%+80px)] flex flex-col gap-10 items-center text-center z-10">
+    <h1 class="font-oi text-[96px] font-normal text-brand-orange uppercase leading-none m-0 w-full">
+      Mesíční údolí
+    </h1>
+    <p class="font-hepta font-medium text-[64px] text-white leading-none m-0 w-full">
+      trampská osada
+    </p>
+  </div>
+
+  <!-- CTA -->
+  <div class="absolute bottom-32 left-1/2 -translate-x-1/2 z-10">
+    <a
+      href="#akce"
+      class="inline-flex items-center justify-center h-16 px-8 w-64 rounded-2xl font-inter font-semibold text-base tracking-[1.6px] uppercase text-white bg-brand-red no-underline"
+    >
+      Co se u nás děje?
+    </a>
+  </div>
+</section>
