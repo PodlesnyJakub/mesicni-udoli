@@ -1,15 +1,7 @@
 ---
-const galleries = [
-  { title: "Nohejbal",      month: "9/2024" },
-  { title: "Volejbal ženy", month: "9/2024" },
-  { title: "Potlach 2024",  month: "7/2024" },
-  { title: "Volejbal 4+2",  month: "6/2024" },
-  { title: "Dětský den",    month: "5/2024" },
-  { title: "Gallery Title", month: "6/2024" },
-  { title: "Gallery Title", month: "6/2024" },
-  { title: "Gallery Title", month: "6/2024" },
-  { title: "Gallery Title", month: "6/2024" },
-];
+type GalleryEntry = { title: string; month: string; image: string };
+const galleryFiles = import.meta.glob('/content/galleries/*/index.json', { eager: true, import: 'default' });
+const galleries = Object.values(galleryFiles) as GalleryEntry[];
 ---
 
 <section id="galerie" class="bg-brand-beige rounded-[128px] flex flex-col gap-20 items-center justify-center overflow-hidden px-64 py-32">
@@ -24,7 +16,7 @@ const galleries = [
       <div class="bg-white rounded-[32px] w-[416px] h-[320px] flex flex-col overflow-hidden shadow-[0px_8px_0px_0px_rgba(0,0,0,0.25)] shrink-0 pb-6 gap-6">
         <div class="flex-1 min-h-0 rounded-[32px] overflow-hidden relative">
           <img
-            src="/images/gallery.png"
+            src={g.image}
             alt={g.title}
             class="absolute inset-0 w-full h-full object-cover rounded-[32px] grayscale hover:grayscale-50 transition-all duration-300"
           />

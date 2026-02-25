@@ -1,0 +1,81 @@
+---
+export const prerender = false;
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { readJSON, writeJSON, uploadImage } from '../../lib/github';
+
+type HistorySection = { image: string; text: string };
+type HistoryData = { heading: string; intro: string; sections: HistorySection[] };
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+
+  const sections: HistorySection[] = [];
+  for (let i = 0; i < 3; i++) {
+    const imageFile = form.get(`image_${i}`) as File | null;
+    let image = form.get(`existingImage_${i}`) as string ?? '';
+    if (imageFile && imageFile.size > 0) {
+      const ext = imageFile.name.split('.').pop() ?? 'jpg';
+      image = await uploadImage(`public/images/history-${i + 1}.${ext}`, imageFile);
+    }
+    sections.push({
+      image,
+      text: form.get(`text_${i}`) as string,
+    });
+  }
+
+  const data: HistoryData = {
+    heading: form.get('heading') as string,
+    intro: form.get('intro') as string,
+    sections,
+  };
+
+  const ok = await writeJSON('content/history/index.json', data, 'Update history section');
+  if (ok) return Astro.redirect('/admin/history?saved=1');
+  error = 'Uložení se nezdařilo. Zkontrolujte GITHUB_TOKEN a GITHUB_REPO.';
+}
+
+const history = await readJSON<HistoryData>('content/history/index.json');
+---
+
+<AdminLayout title="Historie">
+  {error && <p style="color:#fca031;margin-bottom:16px;">{error}</p>}
+  <form class="form" method="POST" enctype="multipart/form-data">
+    <div class="field">
+      <label>Nadpis sekce
+        <input type="text" name="heading" value={history?.heading ?? ''} required />
+      </label>
+    </div>
+    <div class="field">
+      <label>Úvodní text
+        <textarea name="intro" rows="4">{history?.intro ?? ''}</textarea>
+      </label>
+    </div>
+
+    {[0, 1, 2].map(i => (
+      <div class="section-card">
+        <div class="section-title">Sekce {i + 1}</div>
+        <div class="field">
+          <label>Fotografie
+            {history?.sections?.[i]?.image && (
+              <img src={history.sections[i].image} class="thumb" alt="" />
+            )}
+            <input type="file" name={`image_${i}`} accept="image/*" />
+            <input type="hidden" name={`existingImage_${i}`} value={history?.sections?.[i]?.image ?? ''} />
+            <span class="hint">Ponechte prázdné pro zachování stávající fotografie.</span>
+          </label>
+        </div>
+        <div class="field">
+          <label>Text
+            <textarea name={`text_${i}`} rows="5">{history?.sections?.[i]?.text ?? ''}</textarea>
+          </label>
+        </div>
+      </div>
+    ))}
+
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Uložit</button>
+    </div>
+  </form>
+</AdminLayout>

@@ -1,0 +1,20 @@
+---
+export const prerender = false;
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Přehled">
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
+    {[
+      { href: '/admin/hero', label: 'Hero sekce', desc: 'Nadpis, podnadpis, tlačítko, pozadí' },
+      { href: '/admin/events', label: 'Akce', desc: 'Přidat, upravit nebo smazat akce' },
+      { href: '/admin/galleries', label: 'Fotogalerie', desc: 'Přidat, upravit nebo smazat galerie' },
+      { href: '/admin/history', label: 'Historie', desc: 'Texty a fotografie sekce Historie' },
+    ].map(card => (
+      <a href={card.href} style="display:flex;flex-direction:column;gap:8px;background:#383124;border-radius:12px;padding:20px;text-decoration:none;color:#e7e3da;border:1px solid #574d38;">
+        <strong style="color:#fca031;font-size:15px;">{card.label}</strong>
+        <span style="font-size:13px;color:#bfb39c;">{card.desc}</span>
+      </a>
+    ))}
+  </div>
+</AdminLayout>

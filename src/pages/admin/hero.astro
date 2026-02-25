@@ -1,0 +1,65 @@
+---
+export const prerender = false;
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { readJSON, writeJSON, uploadImage } from '../../lib/github';
+
+type HeroData = { title: string; subtitle: string; ctaText: string; bgImage: string };
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const imageFile = form.get('bgImage') as File | null;
+
+  let bgImage = form.get('existingImage') as string ?? '/images/hero-bg.png';
+  if (imageFile && imageFile.size > 0) {
+    const ext = imageFile.name.split('.').pop() ?? 'jpg';
+    bgImage = await uploadImage(`public/images/hero-bg.${ext}`, imageFile);
+  }
+
+  const data: HeroData = {
+    title: form.get('title') as string,
+    subtitle: form.get('subtitle') as string,
+    ctaText: form.get('ctaText') as string,
+    bgImage,
+  };
+
+  const ok = await writeJSON('content/hero/index.json', data, 'Update hero section');
+  if (ok) return Astro.redirect('/admin/hero?saved=1');
+  error = 'Uložení se nezdařilo. Zkontrolujte GITHUB_TOKEN a GITHUB_REPO.';
+}
+
+const hero = await readJSON<HeroData>('content/hero/index.json');
+---
+
+<AdminLayout title="Hero sekce">
+  {error && <p style="color:#fca031;margin-bottom:16px;">{error}</p>}
+  <form class="form" method="POST" enctype="multipart/form-data">
+    <div class="field">
+      <label>Nadpis (H1)
+        <input type="text" name="title" value={hero?.title ?? ''} required />
+      </label>
+    </div>
+    <div class="field">
+      <label>Podnadpis
+        <input type="text" name="subtitle" value={hero?.subtitle ?? ''} required />
+      </label>
+    </div>
+    <div class="field">
+      <label>Text tlačítka
+        <input type="text" name="ctaText" value={hero?.ctaText ?? ''} required />
+      </label>
+    </div>
+    <div class="field">
+      <label>Fotografie pozadí
+        {hero?.bgImage && <img src={hero.bgImage} class="thumb" alt="" />}
+        <input type="file" name="bgImage" accept="image/*" />
+        <input type="hidden" name="existingImage" value={hero?.bgImage ?? ''} />
+        <span class="hint">Ponechte prázdné pro zachování stávající fotografie.</span>
+      </label>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Uložit</button>
+    </div>
+  </form>
+</AdminLayout>

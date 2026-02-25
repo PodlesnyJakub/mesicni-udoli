@@ -1,0 +1,67 @@
+---
+export const prerender = false;
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { readJSON, writeJSON, uploadImage, slugify } from '../../../lib/github';
+
+type GalleryEntry = { title: string; month: string; image: string };
+
+const { slug } = Astro.params;
+const isNew = slug === 'new';
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const title = form.get('title') as string;
+  const entrySlug = isNew ? slugify(title) : slug!;
+
+  const imageFile = form.get('image') as File | null;
+  let image = form.get('existingImage') as string ?? '';
+  if (imageFile && imageFile.size > 0) {
+    const ext = imageFile.name.split('.').pop() ?? 'jpg';
+    image = await uploadImage(`public/images/galleries/${entrySlug}.${ext}`, imageFile);
+  }
+
+  const data: GalleryEntry = {
+    title,
+    month: form.get('month') as string,
+    image,
+  };
+
+  const ok = await writeJSON(`content/galleries/${entrySlug}/index.json`, data, `${isNew ? 'Add' : 'Update'} gallery: ${entrySlug}`);
+  if (ok) return Astro.redirect(`/admin/galleries/${entrySlug}?saved=1`);
+  error = 'Uložení se nezdařilo. Zkontrolujte GITHUB_TOKEN a GITHUB_REPO.';
+}
+
+const gallery = isNew ? null : await readJSON<GalleryEntry>(`content/galleries/${slug}/index.json`);
+const pageTitle = isNew ? 'Nová galerie' : (gallery?.title ?? 'Upravit galerii');
+---
+
+<AdminLayout title={pageTitle}>
+  {error && <p style="color:#fca031;margin-bottom:16px;">{error}</p>}
+  <p style="margin-bottom:20px;"><a href="/admin/galleries" style="color:#bfb39c;text-decoration:none;">← Zpět na galerie</a></p>
+  <form class="form" method="POST" enctype="multipart/form-data">
+    <div class="field">
+      <label>Název galerie
+        <input type="text" name="title" value={gallery?.title ?? ''} required />
+      </label>
+    </div>
+    <div class="field">
+      <label>Měsíc / období
+        <input type="text" name="month" value={gallery?.month ?? ''} placeholder="např. 9/2024" required />
+      </label>
+    </div>
+    <div class="field">
+      <label>Náhledová fotografie
+        {gallery?.image && <img src={gallery.image} class="thumb" alt="" />}
+        <input type="file" name="image" accept="image/*" />
+        <input type="hidden" name="existingImage" value={gallery?.image ?? ''} />
+        <span class="hint">Ponechte prázdné pro zachování stávající fotografie.</span>
+      </label>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Uložit</button>
+      <a href="/admin/galleries" class="btn btn-secondary" style="text-decoration:none;">Zrušit</a>
+    </div>
+  </form>
+</AdminLayout>

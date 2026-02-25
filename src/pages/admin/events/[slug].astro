@@ -1,0 +1,73 @@
+---
+export const prerender = false;
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { readJSON, writeJSON, uploadImage, slugify } from '../../../lib/github';
+
+type EventEntry = { name: string; date: string; image: string; description: string };
+
+const { slug } = Astro.params;
+const isNew = slug === 'new';
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const name = form.get('name') as string;
+  const entrySlug = isNew ? slugify(name) : slug!;
+
+  const imageFile = form.get('image') as File | null;
+  let image = form.get('existingImage') as string ?? '';
+  if (imageFile && imageFile.size > 0) {
+    const ext = imageFile.name.split('.').pop() ?? 'jpg';
+    image = await uploadImage(`public/images/events/${entrySlug}.${ext}`, imageFile);
+  }
+
+  const data: EventEntry = {
+    name,
+    date: form.get('date') as string,
+    image,
+    description: form.get('description') as string,
+  };
+
+  const ok = await writeJSON(`content/events/${entrySlug}/index.json`, data, `${isNew ? 'Add' : 'Update'} event: ${entrySlug}`);
+  if (ok) return Astro.redirect(`/admin/events/${entrySlug}?saved=1`);
+  error = 'Uložení se nezdařilo. Zkontrolujte GITHUB_TOKEN a GITHUB_REPO.';
+}
+
+const event = isNew ? null : await readJSON<EventEntry>(`content/events/${slug}/index.json`);
+const pageTitle = isNew ? 'Nová akce' : (event?.name ?? 'Upravit akci');
+---
+
+<AdminLayout title={pageTitle}>
+  {error && <p style="color:#fca031;margin-bottom:16px;">{error}</p>}
+  <p style="margin-bottom:20px;"><a href="/admin/events" style="color:#bfb39c;text-decoration:none;">← Zpět na akce</a></p>
+  <form class="form" method="POST" enctype="multipart/form-data">
+    <div class="field">
+      <label>Název akce
+        <input type="text" name="name" value={event?.name ?? ''} required />
+      </label>
+    </div>
+    <div class="field">
+      <label>Datum / termín
+        <input type="text" name="date" value={event?.date ?? ''} placeholder="např. květen/červen 2024" required />
+      </label>
+    </div>
+    <div class="field">
+      <label>Popis
+        <textarea name="description" rows="6">{event?.description ?? ''}</textarea>
+      </label>
+    </div>
+    <div class="field">
+      <label>Fotografie
+        {event?.image && <img src={event.image} class="thumb" alt="" />}
+        <input type="file" name="image" accept="image/*" />
+        <input type="hidden" name="existingImage" value={event?.image ?? ''} />
+        <span class="hint">Ponechte prázdné pro zachování stávající fotografie.</span>
+      </label>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Uložit</button>
+      <a href="/admin/events" class="btn btn-secondary" style="text-decoration:none;">Zrušit</a>
+    </div>
+  </form>
+</AdminLayout>

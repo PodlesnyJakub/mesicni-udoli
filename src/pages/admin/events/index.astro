@@ -1,0 +1,57 @@
+---
+export const prerender = false;
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { listSlugs, readJSON, deleteEntry } from '../../../lib/github';
+
+type EventEntry = { name: string; date: string };
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const slug = form.get('slug') as string;
+  const ok = await deleteEntry(`content/events/${slug}/index.json`, `Delete event: ${slug}`);
+  if (!ok) error = 'Smazání se nezdařilo.';
+}
+
+const slugs = await listSlugs('content/events');
+const events: { slug: string; name: string; date: string }[] = [];
+for (const slug of slugs) {
+  const data = await readJSON<EventEntry>(`content/events/${slug}/index.json`);
+  if (data) events.push({ slug, name: data.name, date: data.date });
+}
+---
+
+<AdminLayout title="Akce na osadě">
+  {error && <p style="color:#fca031;margin-bottom:16px;">{error}</p>}
+  <a href="/admin/events/new" class="new-btn">+ Přidat akci</a>
+  <div class="card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Název</th>
+          <th>Datum</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {events.length === 0 && (
+          <tr><td colspan="3" style="color:#bfb39c;text-align:center;padding:24px;">Žádné akce</td></tr>
+        )}
+        {events.map(ev => (
+          <tr>
+            <td>{ev.name}</td>
+            <td style="color:#bfb39c;">{ev.date}</td>
+            <td style="text-align:right;">
+              <a href={`/admin/events/${ev.slug}`}>Upravit</a>
+              <form method="POST" style="display:inline;margin-left:16px;" onsubmit="return confirm('Opravdu smazat?')">
+                <input type="hidden" name="slug" value={ev.slug} />
+                <button type="submit" class="btn btn-danger" style="padding:4px 12px;font-size:12px;">Smazat</button>
+              </form>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</AdminLayout>

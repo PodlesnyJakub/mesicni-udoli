@@ -1,36 +1,7 @@
 ---
-const events = [
-  {
-    name: "Dětský den",
-    date: "květen/červen 2024",
-    image: "/images/gallery.png",
-    description: "Dětský den se každoročně koná na přelomu května a června kdy nejstarší členové osady zkouší se svými kamarády ruzné sportovní disciplíny. Například hod na cíl, skok v pytli, chůze na chůdách, opičí dráha, přespolní běh a jiné.",
-  },
-  {
-    name: "Volejbal 4+2",
-    date: "29. června 2024",
-    image: "/images/gallery.png",
-    description: "Tradiční volejbalový turnaj ve formátu 4+2, kde se střetávají smíšené týpy z celé osady. Přijďte povzbudit nebo si zahrát!",
-  },
-  {
-    name: "Potlach",
-    date: "27. července 2024",
-    image: "/images/gallery.png",
-    description: "Potlach je velkou letní slavností osady, kde se setkávají členové i přátelé při hudbě, jídle a hrách.",
-  },
-  {
-    name: "Volejbal ženy",
-    date: "září 2024",
-    image: "/images/gallery.png",
-    description: "Ženský volejbalový turnaj pořádaný každý rok v září. Skvělá příležitost pro soutěžení i přátelské setkání.",
-  },
-  {
-    name: "Nohejbal",
-    date: "září 2024",
-    image: "/images/gallery.png",
-    description: "Nohejbalový turnaj, který se těší velké oblibě mezi členy osady. Přijďte si zahrát nebo jen přihlížet.",
-  },
-];
+type EventEntry = { name: string; date: string; image: string; description: string };
+const eventFiles = import.meta.glob('/content/events/*/index.json', { eager: true, import: 'default' });
+const events = Object.values(eventFiles) as EventEntry[];
 ---
 
 <section id="akce" class="flex flex-col items-center justify-center py-32 bg-brand-bg">

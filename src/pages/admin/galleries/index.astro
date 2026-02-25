@@ -1,0 +1,57 @@
+---
+export const prerender = false;
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { listSlugs, readJSON, deleteEntry } from '../../../lib/github';
+
+type GalleryEntry = { title: string; month: string };
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const slug = form.get('slug') as string;
+  const ok = await deleteEntry(`content/galleries/${slug}/index.json`, `Delete gallery: ${slug}`);
+  if (!ok) error = 'Smazání se nezdařilo.';
+}
+
+const slugs = await listSlugs('content/galleries');
+const galleries: { slug: string; title: string; month: string }[] = [];
+for (const slug of slugs) {
+  const data = await readJSON<GalleryEntry>(`content/galleries/${slug}/index.json`);
+  if (data) galleries.push({ slug, title: data.title, month: data.month });
+}
+---
+
+<AdminLayout title="Fotogalerie">
+  {error && <p style="color:#fca031;margin-bottom:16px;">{error}</p>}
+  <a href="/admin/galleries/new" class="new-btn">+ Přidat galerii</a>
+  <div class="card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Název</th>
+          <th>Měsíc</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {galleries.length === 0 && (
+          <tr><td colspan="3" style="color:#bfb39c;text-align:center;padding:24px;">Žádné galerie</td></tr>
+        )}
+        {galleries.map(g => (
+          <tr>
+            <td>{g.title}</td>
+            <td style="color:#bfb39c;">{g.month}</td>
+            <td style="text-align:right;">
+              <a href={`/admin/galleries/${g.slug}`}>Upravit</a>
+              <form method="POST" style="display:inline;margin-left:16px;" onsubmit="return confirm('Opravdu smazat?')">
+                <input type="hidden" name="slug" value={g.slug} />
+                <button type="submit" class="btn btn-danger" style="padding:4px 12px;font-size:12px;">Smazat</button>
+              </form>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</AdminLayout>

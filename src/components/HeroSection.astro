@@ -1,11 +1,12 @@
 ---
-// Assets
+const heroFiles = import.meta.glob('/content/hero/index.json', { eager: true, import: 'default' });
+const hero = Object.values(heroFiles)[0] as { title: string; subtitle: string; ctaText: string; bgImage: string } | undefined;
 ---
 
 <section class="relative h-[800px] overflow-hidden rounded-b-[128px]">
   <!-- Background image + overlay -->
   <img
-    src="/images/hero-bg.png"
+    src={hero?.bgImage ?? '/images/hero-bg.png'}
     alt=""
     class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
   />
@@ -27,10 +28,10 @@
   <!-- Title -->
   <div class="absolute top-1/2 left-16 right-16 -translate-y-[50%] flex flex-col gap-6 items-center text-center z-10">
     <h1 class="font-oi text-[96px] font-normal text-brand-orange uppercase leading-none m-0 w-full">
-      Mesíční údolí
+      {hero?.title ?? 'Mesíční údolí'}
     </h1>
     <p class="font-hepta font-medium text-[64px] text-white leading-none m-0 w-full">
-      trampská osada
+      {hero?.subtitle ?? 'trampská osada'}
     </p>
   </div>
 
@@ -40,7 +41,7 @@
       href="#akce"
       class="inline-flex items-center justify-center h-16 px-8 w-64 rounded-2xl font-inter font-semibold text-base tracking-[1.6px] uppercase text-white bg-brand-red no-underline"
     >
-      Co se u nás děje?
+      {hero?.ctaText ?? 'Co se u nás děje?'}
     </a>
   </div>
 </section>
