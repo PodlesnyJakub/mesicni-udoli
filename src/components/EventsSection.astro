@@ -1,10 +1,35 @@
 ---
 const events = [
-  { name: "Dětský den",    date: "květen/červen 2024" },
-  { name: "Volejbal 4+2",  date: "29. června 2024" },
-  { name: "Potlach",       date: "27. července 2024" },
-  { name: "Volejbal ženy", date: "září 2024" },
-  { name: "Nohejbal",      date: "září 2024" },
+  {
+    name: "Dětský den",
+    date: "květen/červen 2024",
+    image: "/images/gallery.png",
+    description: "Dětský den se každoročně koná na přelomu května a června kdy nejstarší členové osady zkouší se svými kamarády ruzné sportovní disciplíny. Například hod na cíl, skok v pytli, chůze na chůdách, opičí dráha, přespolní běh a jiné.",
+  },
+  {
+    name: "Volejbal 4+2",
+    date: "29. června 2024",
+    image: "/images/gallery.png",
+    description: "Tradiční volejbalový turnaj ve formátu 4+2, kde se střetávají smíšené týpy z celé osady. Přijďte povzbudit nebo si zahrát!",
+  },
+  {
+    name: "Potlach",
+    date: "27. července 2024",
+    image: "/images/gallery.png",
+    description: "Potlach je velkou letní slavností osady, kde se setkávají členové i přátelé při hudbě, jídle a hrách.",
+  },
+  {
+    name: "Volejbal ženy",
+    date: "září 2024",
+    image: "/images/gallery.png",
+    description: "Ženský volejbalový turnaj pořádaný každý rok v září. Skvělá příležitost pro soutěžení i přátelské setkání.",
+  },
+  {
+    name: "Nohejbal",
+    date: "září 2024",
+    image: "/images/gallery.png",
+    description: "Nohejbalový turnaj, který se těší velké oblibě mezi členy osady. Přijďte si zahrát nebo jen přihlížet.",
+  },
 ];
 ---
 
@@ -23,18 +48,73 @@ const events = [
 
     <!-- Event rows -->
     <ul class="list-none m-0 w-full flex flex-col">
-      {events.map((ev) => (
+      {events.map((ev, i) => (
         <li class="flex items-center h-20 border-t-2 border-white relative text-2xl text-white">
           <span class="font-hepta font-bold">{ev.name}</span>
           <span class="font-hepta font-bold absolute left-1/2 -translate-x-1/2 text-center whitespace-nowrap">
             {ev.date}
           </span>
-          <a href="#" class="ml-auto font-inter font-normal text-2xl text-white underline uppercase whitespace-nowrap hover:text-brand-orange">
+          <button
+            data-modal-index={i}
+            class="ml-auto font-inter font-normal text-2xl text-white underline uppercase whitespace-nowrap hover:text-brand-orange cursor-pointer bg-transparent border-0 p-0"
+          >
             více info
-          </a>
+          </button>
         </li>
       ))}
     </ul>
 
   </div>
 </section>
+
+<!-- Modal -->
+<dialog
+  id="event-modal"
+  class="bg-white flex flex-col gap-12 p-12 rounded-[64px] w-195 max-w-[calc(100vw-2rem)] max-h-[90vh] overflow-y-auto border-0 shadow-2xl"
+>
+  <div class="relative rounded-4xl overflow-hidden h-105 shrink-0 w-full">
+    <img id="modal-image" src="" alt="" class="absolute inset-0 w-full h-full object-cover" />
+  </div>
+  <div class="flex flex-col gap-8 pb-12">
+    <h3 id="modal-title" class="font-hepta font-bold text-[64px] leading-none text-black m-0"></h3>
+    <p id="modal-description" class="font-hepta font-medium text-[24px] leading-normal text-black m-0"></p>
+  </div>
+</dialog>
+
+<style>
+  dialog:not([open]) {
+    display: none;
+  }
+
+  dialog[open] {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+  }
+
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+  }
+</style>
+
+<script is:inline define:vars={{ events }}>
+  const modal = document.getElementById("event-modal");
+  const modalImage = document.getElementById("modal-image");
+  const modalTitle = document.getElementById("modal-title");
+  const modalDescription = document.getElementById("modal-description");
+
+  document.querySelectorAll("[data-modal-index]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const ev = events[Number(btn.dataset.modalIndex)];
+      modalImage.src = ev.image;
+      modalImage.alt = ev.name;
+      modalTitle.textContent = ev.name;
+      modalDescription.textContent = ev.description;
+      modal.showModal();
+    });
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.close();
+  });
+</script>
