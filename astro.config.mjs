@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel';
 
 export default defineConfig({
+  site: 'https://mesicni-udoli.vercel.app',
   adapter: vercel(),
   vite: {
     plugins: [tailwindcss()],
