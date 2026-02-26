@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import footerBg from '../assets/images/footer-bg.png';
+
 const socials = [
   { icon: "/images/icon-facebook.svg", label: "Facebook" },
   { icon: "/images/icon-youtube.svg",  label: "YouTube"  },
@@ -9,8 +12,8 @@ const socials = [
 <footer class="bg-brand-footer rounded-t-[128px] overflow-hidden relative px-80 py-30 flex flex-col items-center justify-center">
 
   <!-- Background -->
-  <img
-    src="/images/footer-bg.png"
+  <Image
+    src={footerBg}
     alt=""
     class="absolute inset-0 w-full h-full object-cover pointer-events-none"
   />

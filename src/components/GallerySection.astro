@@ -18,6 +18,8 @@ const galleries = Object.values(galleryFiles) as GalleryEntry[];
           <img
             src={g.image}
             alt={g.title}
+            loading="lazy"
+            decoding="async"
             class="absolute inset-0 w-full h-full object-cover rounded-[32px] grayscale hover:grayscale-50 transition-all duration-300"
           />
         </div>

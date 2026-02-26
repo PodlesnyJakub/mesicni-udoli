@@ -8,6 +8,8 @@ const hero = Object.values(heroFiles)[0] as { title: string; subtitle: string; c
   <img
     src={hero?.bgImage ?? '/images/hero-bg.png'}
     alt=""
+    fetchpriority="high"
+    decoding="async"
     class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
   />
   <div class="absolute inset-0 bg-black/50"></div>

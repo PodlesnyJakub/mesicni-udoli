@@ -28,6 +28,8 @@ const imageHeights = ['h-135', 'h-125', 'h-120'];
             <img
               src={section.image}
               alt={`Historická fotografie ${i + 1}`}
+              loading="lazy"
+              decoding="async"
               class="w-full h-full object-cover"
             />
           </div>
