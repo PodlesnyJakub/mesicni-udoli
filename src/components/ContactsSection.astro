@@ -1,24 +1,9 @@
 ---
-import { Image } from 'astro:assets';
-import milanPhoto from '../assets/images/contact-milan.png';
-import davidPhoto from '../assets/images/contact-david.png';
-
-const contacts = [
-  {
-    name:  "Milan Kosař",
-    role:  "Šerif osady",
-    phone: "+420 777 228 818",
-    email: "mailday@seznam.cz",
-    photo: milanPhoto,
-  },
-  {
-    name:  "David Trávníček",
-    role:  "Zelenáč osady",
-    phone: "+420 777 228 818",
-    email: "mailday@seznam.cz",
-    photo: davidPhoto,
-  },
-];
+type ContactEntry = { name: string; role: string; phone: string; email: string; photo: string };
+type ContactsData = { contacts: ContactEntry[] };
+const contactsFiles = import.meta.glob('/content/contacts/index.json', { eager: true, import: 'default' });
+const data = Object.values(contactsFiles)[0] as ContactsData | undefined;
+const contacts = data?.contacts ?? [];
 ---
 
 <section id="kontakty" class="bg-brand-beige rounded-[128px] flex flex-col gap-20 items-center justify-center overflow-hidden px-48 py-32">
@@ -33,7 +18,7 @@ const contacts = [
 
         <!-- Portrait -->
         <div class="absolute left-0 top-0 w-[320px] h-[320px] rounded-[64px] overflow-hidden shrink-0">
-          <Image src={c.photo} alt={c.name} width={320} height={320} class="w-full h-full object-cover" />
+          <img src={c.photo} alt={c.name} width={320} height={320} loading="lazy" decoding="async" class="w-full h-full object-cover" />
         </div>
 
         <!-- Info -->

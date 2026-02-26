@@ -1,0 +1,18 @@
+{
+  "contacts": [
+    {
+      "name": "Milan Kosař",
+      "role": "Šerif osady",
+      "phone": "+420 777 228 818",
+      "email": "mailday@seznam.cz",
+      "photo": "/images/contact-milan.png"
+    },
+    {
+      "name": "David Trávníček",
+      "role": "Zelenáč osady",
+      "phone": "+420 777 228 818",
+      "email": "mailday@seznam.cz",
+      "photo": "/images/contact-david.png"
+    }
+  ]
+}

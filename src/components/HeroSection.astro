@@ -1,15 +1,17 @@
 ---
+import { Image } from 'astro:assets';
+import heroBg from '../assets/images/hero-bg.png';
 const heroFiles = import.meta.glob('/content/hero/index.json', { eager: true, import: 'default' });
-const hero = Object.values(heroFiles)[0] as { title: string; subtitle: string; ctaText: string; bgImage: string } | undefined;
+const hero = Object.values(heroFiles)[0] as { title: string; subtitle: string; ctaText: string } | undefined;
 ---
 
 <section class="relative h-[800px] overflow-hidden rounded-b-[128px]">
   <!-- Background image + overlay -->
-  <img
-    src={hero?.bgImage ?? '/images/hero-bg.png'}
+  <Image
+    src={heroBg}
     alt=""
+    loading="eager"
     fetchpriority="high"
-    decoding="async"
     class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
   />
   <div class="absolute inset-0 bg-black/50"></div>

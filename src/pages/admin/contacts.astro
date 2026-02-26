@@ -1,0 +1,84 @@
+---
+export const prerender = false;
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { readJSON, writeJSON, uploadImage } from '../../lib/github';
+
+type ContactEntry = { name: string; role: string; phone: string; email: string; photo: string };
+type ContactsData = { contacts: ContactEntry[] };
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+
+  const contacts: ContactEntry[] = [];
+  for (let i = 0; i < 2; i++) {
+    const imageFile = form.get(`photo${i}`) as File | null;
+    let photo = form.get(`existingPhoto${i}`) as string ?? '';
+    if (imageFile && imageFile.size > 0) {
+      const ext = imageFile.name.split('.').pop() ?? 'jpg';
+      photo = await uploadImage(`public/images/contact-${i}.${ext}`, imageFile);
+    }
+    contacts.push({
+      name: form.get(`name${i}`) as string,
+      role: form.get(`role${i}`) as string,
+      phone: form.get(`phone${i}`) as string,
+      email: form.get(`email${i}`) as string,
+      photo,
+    });
+  }
+
+  error = await writeJSON('content/contacts/index.json', { contacts }, 'Update contacts') ?? '';
+  if (!error) return Astro.redirect('/admin/contacts?saved=1');
+}
+
+const data = await readJSON<ContactsData>('content/contacts/index.json');
+const contacts = data?.contacts ?? [{}, {}];
+---
+
+<AdminLayout title="Kontakty">
+  {error && <p style="color:#fca031;margin-bottom:16px;">{error}</p>}
+  <form class="form" method="POST" enctype="multipart/form-data">
+
+    {[0, 1].map((i) => {
+      const c = contacts[i] as ContactEntry | undefined;
+      return (
+        <div class="section-card">
+          <span class="section-title">Kontakt {i + 1}</span>
+          <div class="field">
+            <label>Jméno
+              <input type="text" name={`name${i}`} value={c?.name ?? ''} required />
+            </label>
+          </div>
+          <div class="field">
+            <label>Role
+              <input type="text" name={`role${i}`} value={c?.role ?? ''} required />
+            </label>
+          </div>
+          <div class="field">
+            <label>Telefon
+              <input type="text" name={`phone${i}`} value={c?.phone ?? ''} required />
+            </label>
+          </div>
+          <div class="field">
+            <label>E-mail
+              <input type="text" name={`email${i}`} value={c?.email ?? ''} required />
+            </label>
+          </div>
+          <div class="field">
+            <label>Fotografie
+              {c?.photo && <img src={c.photo} class="thumb" alt="" />}
+              <input type="file" name={`photo${i}`} accept="image/*" />
+              <input type="hidden" name={`existingPhoto${i}`} value={c?.photo ?? ''} />
+              <span class="hint">Ponechte prázdné pro zachování stávající fotografie.</span>
+            </label>
+          </div>
+        </div>
+      );
+    })}
+
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Uložit</button>
+    </div>
+  </form>
+</AdminLayout>
