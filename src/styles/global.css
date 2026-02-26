@@ -27,4 +27,5 @@ html, body {
   padding: 0;
   width: 100%;
   background-color: #574d38;
+  scroll-behavior: smooth;
 }
