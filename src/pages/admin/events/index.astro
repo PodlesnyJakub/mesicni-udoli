@@ -10,8 +10,7 @@ let error = '';
 if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData();
   const slug = form.get('slug') as string;
-  const ok = await deleteEntry(`content/events/${slug}/index.json`, `Delete event: ${slug}`);
-  if (!ok) error = 'Smazání se nezdařilo.';
+  error = await deleteEntry(`content/events/${slug}/index.json`, `Delete event: ${slug}`) ?? '';
 }
 
 const slugs = await listSlugs('content/events');

@@ -29,9 +29,8 @@ if (Astro.request.method === 'POST') {
     description: form.get('description') as string,
   };
 
-  const ok = await writeJSON(`content/events/${entrySlug}/index.json`, data, `${isNew ? 'Add' : 'Update'} event: ${entrySlug}`);
-  if (ok) return Astro.redirect(`/admin/events/${entrySlug}?saved=1`);
-  error = 'Uložení se nezdařilo. Zkontrolujte GITHUB_TOKEN a GITHUB_REPO.';
+  error = await writeJSON(`content/events/${entrySlug}/index.json`, data, `${isNew ? 'Add' : 'Update'} event: ${entrySlug}`) ?? '';
+  if (!error) return Astro.redirect(`/admin/events/${entrySlug}?saved=1`);
 }
 
 const event = isNew ? null : await readJSON<EventEntry>(`content/events/${slug}/index.json`);

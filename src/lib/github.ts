@@ -27,7 +27,7 @@ export async function readJSON<T>(path: string): Promise<T | null> {
   }
 }
 
-export async function writeJSON(path: string, data: unknown, message: string): Promise<boolean> {
+export async function writeJSON(path: string, data: unknown, message: string): Promise<string | null> {
   try {
     const existing = await getFile(path);
     const content = Buffer.from(JSON.stringify(data, null, 2), 'utf8').toString('base64');
@@ -40,24 +40,28 @@ export async function writeJSON(path: string, data: unknown, message: string): P
         ...(existing?.sha ? { sha: existing.sha } : {}),
       }),
     });
-    return res.ok;
-  } catch {
-    return false;
+    if (res.ok) return null;
+    const body = await res.json().catch(() => ({}));
+    return `GitHub API ${res.status}: ${body?.message ?? res.statusText}`;
+  } catch (e) {
+    return String(e);
   }
 }
 
-export async function deleteEntry(path: string, message: string): Promise<boolean> {
+export async function deleteEntry(path: string, message: string): Promise<string | null> {
   try {
     const existing = await getFile(path);
-    if (!existing?.sha) return false;
+    if (!existing?.sha) return 'Soubor nebyl nalezen.';
     const res = await fetch(`${API_BASE}/${path}`, {
       method: 'DELETE',
       headers: authHeaders,
       body: JSON.stringify({ message, sha: existing.sha }),
     });
-    return res.ok;
-  } catch {
-    return false;
+    if (res.ok) return null;
+    const body = await res.json().catch(() => ({}));
+    return `GitHub API ${res.status}: ${body?.message ?? res.statusText}`;
+  } catch (e) {
+    return String(e);
   }
 }
 

@@ -28,9 +28,8 @@ if (Astro.request.method === 'POST') {
     image,
   };
 
-  const ok = await writeJSON(`content/galleries/${entrySlug}/index.json`, data, `${isNew ? 'Add' : 'Update'} gallery: ${entrySlug}`);
-  if (ok) return Astro.redirect(`/admin/galleries/${entrySlug}?saved=1`);
-  error = 'Uložení se nezdařilo. Zkontrolujte GITHUB_TOKEN a GITHUB_REPO.';
+  error = await writeJSON(`content/galleries/${entrySlug}/index.json`, data, `${isNew ? 'Add' : 'Update'} gallery: ${entrySlug}`) ?? '';
+  if (!error) return Astro.redirect(`/admin/galleries/${entrySlug}?saved=1`);
 }
 
 const gallery = isNew ? null : await readJSON<GalleryEntry>(`content/galleries/${slug}/index.json`);

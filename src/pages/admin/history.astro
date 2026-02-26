@@ -31,9 +31,8 @@ if (Astro.request.method === 'POST') {
     sections,
   };
 
-  const ok = await writeJSON('content/history/index.json', data, 'Update history section');
-  if (ok) return Astro.redirect('/admin/history?saved=1');
-  error = 'Uložení se nezdařilo. Zkontrolujte GITHUB_TOKEN a GITHUB_REPO.';
+  error = await writeJSON('content/history/index.json', data, 'Update history section') ?? '';
+  if (!error) return Astro.redirect('/admin/history?saved=1');
 }
 
 const history = await readJSON<HistoryData>('content/history/index.json');

@@ -24,9 +24,8 @@ if (Astro.request.method === 'POST') {
     bgImage,
   };
 
-  const ok = await writeJSON('content/hero/index.json', data, 'Update hero section');
-  if (ok) return Astro.redirect('/admin/hero?saved=1');
-  error = 'Uložení se nezdařilo. Zkontrolujte GITHUB_TOKEN a GITHUB_REPO.';
+  error = await writeJSON('content/hero/index.json', data, 'Update hero section') ?? '';
+  if (!error) return Astro.redirect('/admin/hero?saved=1');
 }
 
 const hero = await readJSON<HeroData>('content/hero/index.json');
